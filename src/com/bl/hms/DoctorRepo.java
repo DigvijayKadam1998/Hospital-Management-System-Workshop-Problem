@@ -9,4 +9,9 @@ public class DoctorRepo {
 	public void add(Doctor doctor) {
 		doctorList.add(doctor);
 	}
+	
+	List getDoctorsList() {
+		return doctorList;
+	}
+
 }
