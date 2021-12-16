@@ -9,4 +9,8 @@ public class AppointmentRepo {
 	public void add(Appointment appointment) {
 		appointmentList.add(appointment);
 	}
+	
+	List getAppointmentsList() {
+		return appointmentList;
+	}
 }
