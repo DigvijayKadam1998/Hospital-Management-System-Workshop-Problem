@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatientRepo {
-	List patientList = new ArrayList();
+    List patientList = new ArrayList();
 	
-	public void add(Patient patient) {
-		patientList.add(patient);
-	}	
+    public void add(Patient patient) {
+	patientList.add(patient);
+    }
+    List getPatientList() {
+	return patientList;
+    }
 }
+
