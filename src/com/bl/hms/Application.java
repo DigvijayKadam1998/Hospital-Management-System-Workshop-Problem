@@ -1,21 +1,36 @@
 package com.bl.hms;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
-	public static void main(String[] args, int option) {
+	DoctorRepo  doctorRepo = new DoctorRepo();
+	PatientRepo patientRepo = new PatientRepo();
+	AppointmentRepo appointmentRepo = new AppointmentRepo();
+	Scanner sc = new Scanner(System.in);
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int exit = 13;
+		int option;
 		UserInterface userInterface = new UserInterface();
-		int answer = userInterface.showMainMenu();
 		Application application = new Application();
-		application.handleUserSelection(answer);
+		
+		do {
+			option = userInterface.showMainMenu();
+			application.handleUserSelection(option);
+			
+
+		}while(option!=exit);	
 	}
 	
 	void handleUserSelection(int option) {
 		
-		Scanner sc = new Scanner(System.in);
+		UserInterface userInterface = new UserInterface();	
 		switch(option) {
 		case 1:
 			addDoctor();
@@ -25,28 +40,35 @@ public class Application {
 		case 3:
 			break;
 		case 4:
+			List doctors = doctorRepo.getDoctorsList();
+			userInterface.printAllDoctors(doctors);
 			break;
 		case 5:
+			addPatient();
 			break;
 		case 6:
 			break;
 		case 7:
 			break;
 		case 8:
+			List patients = patientRepo.getPatientList();
+			userInterface.printAllPatients(patients);
 			break;
 		case 9:
+			addAppointment();
 			break;
 		case 10:
 			break;
 		case 11:
 			break;
 		case 12:
+			List appointments = appointmentRepo.getAppointmentsList();
+			userInterface.printAllAppointments(appointments);
 			break;
 		case 13:
 			break;
-		case 14:
-			break;
-		case 15:
+		default:
+			System.out.println("Wrong Output");
 			break;
 		}
 	}
@@ -55,17 +77,17 @@ public class Application {
 		Scanner sc = new Scanner(System.in);
 		Doctor doctor = new Doctor();
 		System.out.println("Enter Doctor Id");
-		String doctorId = sc.next();
+		doctor.id = sc.next();
 		System.out.println("Enter Doctor Name");
-		String doctorName = sc.next();
+		doctor.name = sc.next();
 		System.out.println("Enter Doctor Mobile Number");
-		long mobileNumber = sc.nextLong();
+		doctor.mobileNumber = sc.nextLong();
 		System.out.println("Enter Doctor Email Id");
-		String emailId = sc.next();
+		doctor.emailId = sc.next();
 		System.out.println("Enter Doctor Specialisation");
-		String Specialisation = sc.next();
+		doctor.specialisation = sc.next();
 		
-		doctor.availability = new HashMap();
+		doctor.availability = new HashMap<>();
 		doctor.availability.put(Doctor.WeekDays.SUN, " 10 AM TO 12 PM");
 		doctor.availability.put(Doctor.WeekDays.MON, " 12 PM TO 2 PM");
 		doctor.availability.put(Doctor.WeekDays.TUE, " 12 PM TO 2 PM");
@@ -73,9 +95,7 @@ public class Application {
 		doctor.availability.put(Doctor.WeekDays.FRI, " 10 AM TO 12 PM");
 		doctor.availability.put(Doctor.WeekDays.SAT, " 5 PM TO 7 PM");
 		
-		DoctorRepo doctorRepo = new DoctorRepo();
 		doctorRepo.add(doctor);
-		
 	}
 	private void addPatient() {
 		Patient patient = new Patient();
@@ -94,38 +114,53 @@ public class Application {
 		System.out.println("Enter patient mobileNumber");
 		patient.mobileNumber = sc.nextLong();
 		System.out.println("Enter patient Address");
-		patient.address = sc.nextLine();
+		patient.address = sc.next();
+		System.out.println("1.Male \n2.Female \n3.Others :");
+        int option = sc.nextInt();
+        
+        patient.info = new HashMap<>();
+	
+		switch (option){
+            case 1:
+                patient.info.put(Patient.Gender.MALE,"MALE");
+                break;
+            case 2:
+                patient.info.put(Patient.Gender.FEMALE,"FEMALE");
+                break;
+            case 3:
+                patient.info.put(Patient.Gender.OTHER,"OTHER");
+                break;
+            default:
+                System.out.println("Wrong Option..!");
+                break;
+        }
 		
-		int option;
-		option = sc.nextInt();
-		switch(option) {
-		case 1:
-			System.out.println("Male");
-			break;
-		case 2:
-			System.out.println("Female");
-			break;
-		case 3:
-			System.out.println("Others");
-			break;
-		}
-		
-		PatientRepo patientRepo = new PatientRepo();
 		patientRepo.add(patient);
 	}
 	
 	private void addAppointment() {
 		Appointment appointment = new Appointment();
-		Date date = new Date();
-		System.out.println("Enter the Appointment");
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter Doctor Id");
-		appointment.doctorId = sc.next();
+		
+		System.out.println("Enter Appointment Id");
+		appointment.appointmentId = sc.next();
+		
 		System.out.println("Enter Patient Id");
 		appointment.patientId = sc.next();
-		System.out.println("Enter Appointment Date");
 		
-		AppointmentRepo appointmentRepo = new AppointmentRepo();
+		System.out.println("Enter Room Number");
+		appointment.roomNumber = sc.nextInt();
+		
+		System.out.println("Enter Appointment Date in format dd-MMM-yyyy");
+		Scanner sc1 = new Scanner(System.in);
+		appointment.appointmentDate = sc1.nextLine();
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+		try {
+			Date date = formatter.parse(appointment.appointmentDate);
+		} catch(ParseException e) {
+			e.printStackTrace();
+		}
+	
 		appointmentRepo.add(appointment);
 	}
 }
