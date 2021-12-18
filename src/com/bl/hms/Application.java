@@ -76,7 +76,8 @@ public class Application {
 	private void addDoctor() {
 		Scanner sc = new Scanner(System.in);
 		Doctor doctor = new Doctor();
-		System.out.println("Enter Doctor Id");
+		
+		System.out.println("Enter Doctor id");
 		doctor.id = sc.next();
 		System.out.println("Enter Doctor Name");
 		doctor.name = sc.next();
@@ -99,8 +100,7 @@ public class Application {
 	}
 	private void addPatient() {
 		Patient patient = new Patient();
-		System.out.println("Enter the Patient Details");
-		Scanner sc = new Scanner(System.in);
+
 		System.out.println("Enter Patient Diseases");
 		patient.disease = sc.next();
 		System.out.println("Enter patient Id");
@@ -141,12 +141,22 @@ public class Application {
 	private void addAppointment() {
 		Appointment appointment = new Appointment();
 		
+		System.out.println("Enter doctor Id");
+		appointment.doctorId = sc.next();
+		if (!doctorRepo.isDoctorAvailable(appointment.doctorId)) {
+			System.out.println("Doctor not Available");
+			return;
+		}
+		
+		System.out.println("Enter patient Id");
+		appointment.patientId = sc.next();
+		if (!patientRepo.isPatientAvailable(appointment.patientId)) {
+			System.out.println("patient not Available");
+			return;
+		}
+		
 		System.out.println("Enter Appointment Id");
 		appointment.appointmentId = sc.next();
-		
-		System.out.println("Enter Patient Id");
-		appointment.patientId = sc.next();
-		
 		System.out.println("Enter Room Number");
 		appointment.roomNumber = sc.nextInt();
 		
