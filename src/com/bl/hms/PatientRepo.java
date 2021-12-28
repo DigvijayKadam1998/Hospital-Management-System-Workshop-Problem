@@ -4,11 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatientRepo {
-   List <Patient> patientList = new ArrayList();
+	private static PatientRepo instance;
+	List <Patient> patientList = new ArrayList();
+	
+	private PatientRepo() {
+		
+	}
+	
+	public static PatientRepo getInstance() {
+		if(instance == null) {
+			instance = new PatientRepo();
+		}
+		return instance;
+	}
 	
 	public void add(Patient patient) {
 		patientList.add(patient);
 	}
+	
 	List getPatientList() {
 		return patientList;
 	}
@@ -22,4 +35,3 @@ public class PatientRepo {
 		return false;
 	}
 }
-
