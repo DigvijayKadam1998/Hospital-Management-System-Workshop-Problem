@@ -8,19 +8,16 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Application {
-	DoctorRepo  doctorRepo = new DoctorRepo();
-	PatientRepo patientRepo = new PatientRepo();
-	AppointmentRepo appointmentRepo = new AppointmentRepo();
 	Scanner sc = new Scanner(System.in);
 	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		int exit = 13;
 		int option;
-		UserInterface userInterface = new UserInterface();
 		Application application = new Application();
 		
 		do {
+			UserInterface userInterface = UserInterface.getInstance();
 			option = userInterface.showMainMenu();
 			application.handleUserSelection(option);
 			
@@ -30,7 +27,11 @@ public class Application {
 	
 	void handleUserSelection(int option) {
 		
-		UserInterface userInterface = new UserInterface();	
+		UserInterface userInterface = UserInterface.getInstance();
+		DoctorRepo doctorRepo = DoctorRepo.getInstance();
+		PatientRepo patientRepo = PatientRepo.getInstance();
+		AppointmentRepo appointmentRepo = AppointmentRepo.getInstance();
+		
 		switch(option) {
 		case 1:
 			addDoctor();
@@ -38,6 +39,10 @@ public class Application {
 		case 2:
 			break;
 		case 3:
+			System.out.println("Enter the id to remove Doctor");
+			String id = sc.nextLine();
+			Doctor doctor = doctorRepo.get(id);
+			doctorRepo.remove(doctor);
 			break;
 		case 4:
 			List doctors = doctorRepo.getDoctorsList();
@@ -79,12 +84,16 @@ public class Application {
 		
 		System.out.println("Enter Doctor id");
 		doctor.id = sc.next();
+		
 		System.out.println("Enter Doctor Name");
 		doctor.name = sc.next();
+		
 		System.out.println("Enter Doctor Mobile Number");
 		doctor.mobileNumber = sc.nextLong();
+		
 		System.out.println("Enter Doctor Email Id");
 		doctor.emailId = sc.next();
+		
 		System.out.println("Enter Doctor Specialisation");
 		doctor.specialisation = sc.next();
 		
@@ -96,6 +105,7 @@ public class Application {
 		doctor.availability.put(Doctor.WeekDays.FRI, " 10 AM TO 12 PM");
 		doctor.availability.put(Doctor.WeekDays.SAT, " 5 PM TO 7 PM");
 		
+		DoctorRepo doctorRepo = DoctorRepo.getInstance();
 		doctorRepo.add(doctor);
 	}
 	private void addPatient() {
@@ -103,26 +113,33 @@ public class Application {
 
 		System.out.println("Enter Patient Diseases");
 		patient.disease = sc.next();
+		
 		System.out.println("Enter patient Id");
 		patient.id = sc.next();
+		
 		System.out.println("Enter patient Name");
 		patient.name = sc.next();
+		
 		System.out.println("Enter patient age");
 		patient.age = sc.nextInt();
+		
 		System.out.println("Enter patient emailId");
 		patient.emailId = sc.next();
+		
 		System.out.println("Enter patient mobileNumber");
 		patient.mobileNumber = sc.nextLong();
+		
 		System.out.println("Enter patient Address");
 		patient.address = sc.next();
+		
 		System.out.println("1.Male \n2.Female \n3.Others :");
         int option = sc.nextInt();
         
         patient.info = new HashMap<>();
 	
-		switch (option){
-            case 1:
-                patient.info.put(Patient.Gender.MALE,"MALE");
+        switch (option){
+        	case 1:
+        		patient.info.put(Patient.Gender.MALE,"MALE");
                 break;
             case 2:
                 patient.info.put(Patient.Gender.FEMALE,"FEMALE");
@@ -135,6 +152,7 @@ public class Application {
                 break;
         }
 		
+		PatientRepo patientRepo = PatientRepo.getInstance();
 		patientRepo.add(patient);
 	}
 	
@@ -143,6 +161,9 @@ public class Application {
 		
 		System.out.println("Enter doctor Id");
 		appointment.doctorId = sc.next();
+		
+		DoctorRepo doctorRepo = DoctorRepo.getInstance();
+		
 		if (!doctorRepo.isDoctorAvailable(appointment.doctorId)) {
 			System.out.println("Doctor not Available");
 			return;
@@ -150,6 +171,9 @@ public class Application {
 		
 		System.out.println("Enter patient Id");
 		appointment.patientId = sc.next();
+		
+		PatientRepo patientRepo = PatientRepo.getInstance();
+		
 		if (!patientRepo.isPatientAvailable(appointment.patientId)) {
 			System.out.println("patient not Available");
 			return;
@@ -157,11 +181,13 @@ public class Application {
 		
 		System.out.println("Enter Appointment Id");
 		appointment.appointmentId = sc.next();
+		
 		System.out.println("Enter Room Number");
 		appointment.roomNumber = sc.nextInt();
 		
 		System.out.println("Enter Appointment Date in format dd-MMM-yyyy");
 		Scanner sc1 = new Scanner(System.in);
+		
 		appointment.appointmentDate = sc1.nextLine();
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -170,7 +196,8 @@ public class Application {
 		} catch(ParseException e) {
 			e.printStackTrace();
 		}
-	
+		
+		AppointmentRepo appointmentRepo = AppointmentRepo.getInstance();
 		appointmentRepo.add(appointment);
 	}
 }
